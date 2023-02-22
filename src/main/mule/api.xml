@@ -46,8 +46,9 @@ http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/m
 	<flow name="get:\tickets\(BID):apiConfig">
 		<ee:transform>
 			<ee:variables>
-				<ee:set-variable variableName="BID">attributes.uriParams.'BID'
-				</ee:set-variable>
+				<ee:set-variable variableName="BID"><![CDATA[attributes.uriParams.'BID'
+				]]></ee:set-variable>
+				<ee:set-variable variableName="CID" ><![CDATA[attributes.queryParams.'CID']]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
 		<flow-ref doc:name="get-tickets-data-by-bid" doc:id="d7681044-53e9-42d8-a359-d6c3aedb5c7c" name="get-tickets-data-by-bid" />

@@ -7,3 +7,5 @@ tls:
         
 api: 
   id: '18478416'
+  callback:
+    url: "https://localhost:8082/api/cancelShow"

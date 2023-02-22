@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <mule
+	xmlns:anypoint-mq="http://www.mulesoft.org/schema/mule/anypoint-mq"
+	xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:oauth="http://www.mulesoft.org/schema/mule/oauth"
+	xmlns:os="http://www.mulesoft.org/schema/mule/os"
+	xmlns:super-heros-bio-data-sapi="http://www.mulesoft.org/schema/mule/super-heros-bio-data-sapi"
+	xmlns:super-heros-movies-data-sapi="http://www.mulesoft.org/schema/mule/super-heros-movies-data-sapi"
 	xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties"
 	xmlns:tls="http://www.mulesoft.org/schema/mule/tls"
 	xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit"
@@ -8,13 +15,19 @@
 	xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway"
 	xmlns="http://www.mulesoft.org/schema/mule/core"
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
 http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
 http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd
-http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd">
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd
+http://www.mulesoft.org/schema/mule/super-heros-movies-data-sapi http://www.mulesoft.org/schema/mule/super-heros-movies-data-sapi/current/mule-super-heros-movies-data-sapi.xsd
+http://www.mulesoft.org/schema/mule/super-heros-bio-data-sapi http://www.mulesoft.org/schema/mule/super-heros-bio-data-sapi/current/mule-super-heros-bio-data-sapi.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+http://www.mulesoft.org/schema/mule/oauth http://www.mulesoft.org/schema/mule/oauth/current/mule-oauth.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+http://www.mulesoft.org/schema/mule/anypoint-mq http://www.mulesoft.org/schema/mule/anypoint-mq/current/mule-anypoint-mq.xsd">
 
 	<http:listener-config name="apihttpListenerConfig">
 		<http:listener-connection
@@ -67,6 +80,81 @@ http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/sc
 		doc:name="Configuration properties"
 		doc:id="9955d0fa-37bb-46e8-af1d-f722ad295cdf"
 		file="properties.yaml" />
+	<super-heros-movies-data-sapi:config
+		name="superHerosMoviesDataSAPIConfig"
+		doc:name="Super Heros Movies Data SAPI Config"
+		doc:id="1dade85d-1cc7-4059-8c57-20ae8c1d9767"
+		property_host="super-movies-sapi-gabo.us-e2.cloudhub.io"
+		property_port="80"
+		property_protocol="HTTP"
+		property_username="9b91c33689a14adebd41a1ed2b5e6c24"
+		property_password="aA9a9b1484114c758870867aA3e94ef0"
+		property_basePath="/api/v1" />
+	<super-heros-bio-data-sapi:config
+		name="superHerosBioDataSAPIConfig"
+		doc:name="Super Heros Bio Data SAPI Config"
+		doc:id="0d35b2e6-ae97-4ee4-83e8-ad04dbd7dbba"
+		property_host="super-biodata-sapi-gabo.us-e2.cloudhub.io"
+		property_port="80"
+		property_protocol="HTTP"
+		property_username="9b91c33689a14adebd41a1ed2b5e6c24"
+		property_password="aA9a9b1484114c758870867aA3e94ef0"
+		property_basePath="/api/v1" />
+	<os:object-store
+		name="oauthTokenObjectStore"
+		doc:name="Object store"
+		doc:id="685e7e83-e436-4ab7-8506-b4cb8c6334bf"
+		entryTtl="60"
+		entryTtlUnit="MINUTES"
+		expirationInterval="60" />
+	<http:request-config
+		name="bookingsDataByBID"
+		doc:name="HTTP Request configuration"
+		doc:id="14b45820-2bfb-4946-97cf-b83b0520140d"
+		basePath="/booking">
+		<http:request-connection
+			protocol="HTTPS"
+			host="onlineman477-eval-prod.apigee.net"
+			port="443">
+			<http:authentication>
+				<oauth:client-credentials-grant-type
+					clientId="KZ25TpHNeppVOmwtKpD6jQAjnq4vrLG1"
+					clientSecret="CYBpVYhSeqSy4GSR"
+					tokenUrl="https://onlineman477-eval-prod.apigee.net/owasp-oauth/token">
+					<oauth:token-manager
+						objectStore="oauthTokenObjectStore" />
+				</oauth:client-credentials-grant-type>
+			</http:authentication>
+		</http:request-connection>
+	</http:request-config>
+	<os:object-store
+		name="biodataObjectStore"
+		doc:name="Object store"
+		doc:id="fdea5624-9e90-4fdd-99ba-3ca3f8563152"
+		entryTtl="60"
+		expirationInterval="30"
+		expirationIntervalUnit="SECONDS" />
+	<ee:object-store-caching-strategy
+		name="biodataCachingStrategy"
+		doc:name="Caching Strategy"
+		doc:id="b40d90b9-b5d3-47cf-9068-22a76bd3e926"
+		keyGenerationExpression="#[vars.CID]"
+		objectStore="biodataObjectStore" />
+	<vm:config
+		name="vmConfigShowCancellation"
+		doc:name="VM Config"
+		doc:id="9f356318-483e-4b38-8da9-94b0e453c58a">
+		<vm:queues>
+			<vm:queue
+				queueName="cancel-show-notifications-queue"
+				queueType="PERSISTENT"
+				maxOutstandingMessages="50" />
+			<vm:queue
+				queueName="cancel-show-notifications-dlq"
+				queueType="PERSISTENT"
+				maxOutstandingMessages="50" />
+		</vm:queues>
+	</vm:config>
 
 
 

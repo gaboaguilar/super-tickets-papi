@@ -97,6 +97,19 @@ output application/json
 				</ee:variables>
 			</ee:transform>
 		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="03a54c2d-ce21-4094-a1cb-3113a582b30f" type="ANY">
+			<ee:transform doc:name="Transform Message" doc:id="01dfc706-7c33-45a5-9be9-b96d2f960028" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"message":"Custom error handler",
+	"error": "Internal server error"
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		</on-error-propagate>
 
 	</error-handler>
 	<error-handler
